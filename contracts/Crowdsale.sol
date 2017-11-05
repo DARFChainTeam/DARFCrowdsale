@@ -146,7 +146,7 @@ contract Crowdsale is Pausable, PullPayment {
             // compare to all profit share will LT 49%
             if (MAX_INVEST_SHARE > share) {
                 MAX_INVEST_SHARE.sub(share);
-                // add share to investor
+                // add shainvestor
                 Investor investor = investors[beneficiary];
                 investor.profitshare.add(share);
 
