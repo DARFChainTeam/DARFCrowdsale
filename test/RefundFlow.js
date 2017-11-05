@@ -1,11 +1,11 @@
 var DARFtoken = artifacts.require("./DARFtoken.sol");
 var Crowdsale = artifacts.require("./Crowdsale.sol");
 
-var TOTAL_COINS = 1000000000000000;
-var CROWDSALE_CAP = 600000000000000;
+var TOTAL_COINS = 84000000;
+var CROWDSALE_CAP = 80000000;
+var ALLC_PER_ETHER = 500;
 var PERIOD_30_DAYS = 30*24*60*60;
 var PERIOD_15_DAYS = 15*24*60*60;
-var ALLC_PER_ETHER = 6000000000;
 
 contract('RefundFlow', function(accounts) {
 

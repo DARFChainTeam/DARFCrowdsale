@@ -1,12 +1,13 @@
 var DARFtoken = artifacts.require("./DARFtoken.sol");
 var Crowdsale = artifacts.require("./Crowdsale.sol");
 
-var TOTAL_COINS = 1000000000000000;
-var CROWDSALE_CAP = 600000000000000;
+
+var TOTAL_COINS = 84000000;
+var CROWDSALE_CAP = 80000000;
+var ALLC_PER_ETHER = 500;
 var PERIOD_28_DAYS = 28*24*60*60;
 var PERIOD_2_DAYS = 2*24*60*60;
-var SEND_ETHER =  10000;
-var ALLC_PER_ETHER = 6000000000;
+var SEND_ETHER =  10;
 var RECEIVE_ALLC_AMOUNT = SEND_ETHER * ALLC_PER_ETHER + ((SEND_ETHER * ALLC_PER_ETHER) / 5); // + 20% bonus
 
 contract('MainFlow', function(accounts) {
