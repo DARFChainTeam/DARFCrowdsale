@@ -35,14 +35,14 @@ contract Crowdsale is Pausable, PullPayment {
     If backer buy over 1 000 000 DARF (2000 Ether) he/she can clame to become an investor after signing additional agreement with KYC procedure and get 1% of project profit per every 1 000 000 DARF
     */
     struct Investor {
-        fixed profitshare; // Amount of Ether given
+        uint  profitshare; // Amount of Ether given
     }
     uint public constant MIN_INVEST_BUY = 2000 ether;
 
     /* But only 49%  of profit can be distributed this way
     */
 
-    fixed public  MAX_INVEST_SHARE = 49.00; //%
+    uint  public  MAX_INVEST_SHARE = 4900; //  4900 from 10000 is 49%, becouse Soliditi stil don't support fixed
 
 /* Crowdsale period */
 	uint private constant CROWDSALE_PERIOD = 42 days;
@@ -141,15 +141,14 @@ contract Crowdsale is Pausable, PullPayment {
 		backer.weiReceived = backer.weiReceived.add(msg.value); // Update the total wei collected during the crowdfunding for this backer    
         if (backer.weiReceived > MIN_INVEST_BUY) {
 
-			fixed this_buy = fixed(msg.value);
             // calculate profit share
-            fixed share = this_buy / fixed(MIN_INVEST_BUY);
+            uint share = msg.value.mul(10000).div(MIN_INVEST_BUY);
             // compare to all profit share will LT 49%
             if (MAX_INVEST_SHARE > share) {
-                MAX_INVEST_SHARE = MAX_INVEST_SHARE - share;
-                // add an investor
+                MAX_INVEST_SHARE.sub(share);
+                // add share to investor
                 Investor investor = investors[beneficiary];
-                investor.profitshare = investor.profitshare + share;
+                investor.profitshare.add(share);
 
 
             }
