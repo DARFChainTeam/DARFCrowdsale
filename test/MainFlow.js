@@ -28,11 +28,11 @@ contract('MainFlow', function(accounts) {
   }
 
 
-  it("should put 1,000,000,000.000000 DARFtoken in the owner account", function() {
+  it("should put all DARFtoken in the owner account", function() {
     return DARFtoken.deployed().then(function(instance) {
       return instance.balanceOf.call(owner);
     }).then(function(balance) {
-      assert.equal(balance.valueOf(), TOTAL_COINS, "1,000,000,000.000000 wasn't in the owner account");
+      assert.equal(balance.valueOf(), TOTAL_COINS, "wasn't in the owner account");
     });
   });
 

@@ -136,13 +136,29 @@ contract Crowdsale is Pausable, PullPayment {
 	 *Compute the DARFtoken bonus according to the investment period
 	 */
 	function bonus(uint amount) internal constant returns (uint) {
-		if (now < startTime.add(2 days)) return amount.add(amount.div(5));   // bonus 20%
+		/*
+			25%in the first 15 days
+			20% 16 days 18 days
+			15% 19 days 21 days
+			10% 22 days 24 days
+			5% from 25 days to 27 days
+			0% from 28 days to 42 days
+
+			*/
+
+		if (now < startTime.add(16 days)) return amount.add(amount.div(4));   // bonus 25%
+		if (now < startTime.add(18 days)) return amount.add(amount.div(5));   // bonus 20%
+		if (now < startTime.add(22 days)) return amount.add(amount.div(20).mul(3));   // bonus 15%
+		if (now < startTime.add(25 days)) return amount.add(amount.div(10));   // bonus 10%
+		if (now < startTime.add(28 days)) return amount.add(amount.div(20));   // bonus 5
+
+
 		return amount;
 	}
 
-	/*	
-	 * Finalize the crowdsale, should be called after the refund period
-	*/
+/*
+ * Finalize the crowdsale, should be called after the refund period
+*/
 	function finalize() onlyOwner public {
 
 		if (now < endTime) { // Cannot finalise before CROWDSALE_PERIOD or before selling all coins
@@ -154,9 +170,10 @@ contract Crowdsale is Pausable, PullPayment {
 		require(multisigEther.send(this.balance)); // Move the remaining Ether to the multisig address
 		
 		uint remains = coin.balanceOf(this);
-		if (remains > 0) { // Burn the rest of DARFtokens
-			require(coin.burn(remains)) ;
-		}
+		// No burn all of my precisiossss!
+		// if (remains > 0) { // Burn the rest of DARFtokens
+		//	require(coin.burn(remains)) ;
+		//}
 		crowdsaleClosed = true;
 	}
 
@@ -215,8 +232,8 @@ contract Crowdsale is Pausable, PullPayment {
 		require (_value == backers[msg.sender].coinSent) ; // compare value from backer balance
 
 		coin.transferFrom(msg.sender, address(this), _value); // get the token back to the crowdsale contract
-
-		require (coin.burn(_value)); // token sent for refund are burnt
+		// No burn all of my precisiossss!
+		//require (coin.burn(_value)); // token sent for refund are burnt
 
 		uint ETHToSend = backers[msg.sender].weiReceived;
 		backers[msg.sender].weiReceived=0;
