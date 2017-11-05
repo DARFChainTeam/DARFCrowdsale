@@ -18,6 +18,7 @@ contract Crowdsale is Pausable, PullPayment {
 		uint coinSent;
 	}
 
+
 	/*
 	* Constants
 	*/
@@ -27,10 +28,23 @@ contract Crowdsale is Pausable, PullPayment {
 	/* Maximum number of DARFtoken to sell */
 	uint public constant MAX_CAP = 80000000; // 80,000,000 DARFtokens
 
-	/* Minimum amount to invest */
-	uint public constant MIN_INVEST_ETHER = 100 finney;
+	/* Minimum amount to BUY */
+	uint public constant MIN_BUY_ETHER = 100 finney;
 
-	/* Crowdsale period */
+    /*
+    If backer buy over 1 000 000 DARF (2000 Ether) he/she can clame to become an investor after signing additional agreement with KYC procedure and get 1% of project profit per every 1 000 000 DARF
+    */
+    struct Investor {
+        fixed profitshare; // Amount of Ether given
+    }
+    uint public constant MIN_INVEST_BUY = 2000 ether;
+
+    /* But only 49%  of profit can be distributed this way
+    */
+
+    fixed public constant MAX_INVEST_SHARE = 49.00; //%
+
+/* Crowdsale period */
 	uint private constant CROWDSALE_PERIOD = 42 days;
 
 	/* Number of DARFtokens per Ether */
@@ -63,6 +77,9 @@ contract Crowdsale is Pausable, PullPayment {
 
 	/* Backers Ether indexed by their Ethereum address */
 	mapping(address => Backer) public backers;
+
+    mapping(address => Investor) public investors; // list of investors
+
 
 	/*
 	* Modifiers
@@ -112,16 +129,32 @@ contract Crowdsale is Pausable, PullPayment {
 	 *	Receives a donation in Ether
 	*/
 	function receiveETH(address beneficiary) internal {
-		require(!(msg.value < MIN_INVEST_ETHER)); // Don't accept funding under a predefined threshold
+		require(!(msg.value < MIN_BUY_ETHER)); // Don't accept funding under a predefined threshold
 		
 		uint coinToSend = bonus(msg.value.mul(COIN_PER_ETHER).div(1 ether)); // Compute the number of DARFtoken to send
 		require(!(coinToSend.add(coinSentToEther) > MAX_CAP));	
 
-		 Backer backer = backers[beneficiary];
+        Backer backer = backers[beneficiary];
 		coin.transfer(beneficiary, coinToSend); // Transfer DARFtokens right now
 
 		backer.coinSent = backer.coinSent.add(coinToSend);
 		backer.weiReceived = backer.weiReceived.add(msg.value); // Update the total wei collected during the crowdfunding for this backer    
+        if (backer.weiReceived > MIN_INVEST_BUY) {
+
+            this_buy = fixed(msg.value);
+            // calculate profit share
+            fixed share =this_buy.div(fixed(MIN_INVEST_BUY));
+            // compare to all profit share will LT 49%
+            if (MAX_INVEST_SHARE > share) {
+                MAX_INVEST_SHARE.sub(share);
+                // add an investor
+                Investor investor = investors[beneficiary];
+                investor.profitshare.add(share);
+
+
+            }
+
+        }
 
 		etherReceived = etherReceived.add(msg.value); // Update the total wei collected during the crowdfunding
 		coinSentToEther = coinSentToEther.add(coinToSend);
@@ -133,7 +166,7 @@ contract Crowdsale is Pausable, PullPayment {
 	
 
 	/*
-	 *Compute the DARFtoken bonus according to the investment period
+	 *Compute the DARFtoken bonus according to the BUYment period
 	 */
 	function bonus(uint amount) internal constant returns (uint) {
 		/*
@@ -200,11 +233,11 @@ contract Crowdsale is Pausable, PullPayment {
 	}
 
 	/**
-	 * Transfer remains to owner in case if impossible to do min invest
+	 * Transfer remains to owner in case if impossible to do min BUY
 	 */
 	function getRemainCoins() onlyOwner public {
 		var remains = MAX_CAP - coinSentToEther;
-		uint minCoinsToSell = bonus(MIN_INVEST_ETHER.mul(COIN_PER_ETHER) / (1 ether));
+		uint minCoinsToSell = bonus(MIN_BUY_ETHER.mul(COIN_PER_ETHER) / (1 ether));
 
 		require(!(remains > minCoinsToSell));
 
@@ -213,7 +246,8 @@ contract Crowdsale is Pausable, PullPayment {
 
 		backer.coinSent = backer.coinSent.add(remains);
 
-		coinSentToEther = coinSentToEther.add(remains);
+
+        coinSentToEther = coinSentToEther.add(remains);
 
 		// Send events
 		LogCoinsEmited(this ,remains);
