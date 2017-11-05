@@ -22,10 +22,10 @@ contract Crowdsale is Pausable, PullPayment {
 	* Constants
 	*/
 	/* Minimum number of DARFtoken to sell */
-	uint public constant MIN_CAP = 10000000; // 30,000,000 DARFtokens
+	uint public constant MIN_CAP = 10000000; // 1,000,000 DARFtokens
 
 	/* Maximum number of DARFtoken to sell */
-	uint public constant MAX_CAP = 80000000; // 600,000,000 DARFtokens
+	uint public constant MAX_CAP = 80000000; // 80,000,000 DARFtokens
 
 	/* Minimum amount to invest */
 	uint public constant MIN_INVEST_ETHER = 100 finney;
