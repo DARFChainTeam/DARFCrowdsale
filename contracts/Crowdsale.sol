@@ -3,11 +3,11 @@ pragma solidity ^0.4.11;
 
 import "./Pausable.sol";
 import "./PullPayment.sol";
-import "./AllCodeCoin.sol";
+import "./DARFtoken.sol";
 
 /*
   Crowdsale Smart Contract for allcode
-  This smart contract collects ETH, and in return emits AllCodeCoin tokens to the backers
+  This smart contract collects ETH, and in return emits DARFtoken tokens to the backers
 */
 contract Crowdsale is Pausable, PullPayment {
     
@@ -21,27 +21,27 @@ contract Crowdsale is Pausable, PullPayment {
 	/*
 	* Constants
 	*/
-	/* Minimum number of AllCodeCoin to sell */
-	uint public constant MIN_CAP = 30000000000000; // 30,000,000 AllCodeCoins
+	/* Minimum number of DARFtoken to sell */
+	uint public constant MIN_CAP = 10000000; // 30,000,000 DARFtokens
 
-	/* Maximum number of AllCodeCoin to sell */
-	uint public constant MAX_CAP = 600000000000000; // 600,000,000 AllCodeCoins
+	/* Maximum number of DARFtoken to sell */
+	uint public constant MAX_CAP = 80000000; // 600,000,000 DARFtokens
 
 	/* Minimum amount to invest */
 	uint public constant MIN_INVEST_ETHER = 100 finney;
 
 	/* Crowdsale period */
-	uint private constant CROWDSALE_PERIOD = 30 days;
+	uint private constant CROWDSALE_PERIOD = 42 days;
 
-	/* Number of AllCodeCoins per Ether */
-	uint public constant COIN_PER_ETHER = 6000000000; // 6,000 AllCodeCoins
+	/* Number of DARFtokens per Ether */
+	uint public constant COIN_PER_ETHER = 500; // 500 DARF per ether
 
 
 	/*
 	* Variables
 	*/
-	/* AllCodeCoin contract reference */
-	AllCodeCoin public coin;
+	/* DARFtoken contract reference */
+	DARFtoken public coin;
 
     /* Multisig contract that will receive the Ether */
 	address public multisigEther;
@@ -49,7 +49,7 @@ contract Crowdsale is Pausable, PullPayment {
 	/* Number of Ether received */
 	uint public etherReceived;
 
-	/* Number of AllCodeCoins sent to Ether contributors */
+	/* Number of DARFtokens sent to Ether contributors */
 	uint public coinSentToEther;
 
 	/* Crowdsale start time */
@@ -86,8 +86,8 @@ contract Crowdsale is Pausable, PullPayment {
 	/*
 	 * Constructor
 	*/
-	function Crowdsale(address _allcodeCoinAddress, address _to) {
-		coin = AllCodeCoin(_allcodeCoinAddress);
+	function Crowdsale(address _DARFtokenAddress, address _to) {
+		coin = DARFtoken(_DARFtokenAddress);
 		multisigEther = _to;
 	}
 
@@ -114,11 +114,11 @@ contract Crowdsale is Pausable, PullPayment {
 	function receiveETH(address beneficiary) internal {
 		require(!(msg.value < MIN_INVEST_ETHER)); // Don't accept funding under a predefined threshold
 		
-		uint coinToSend = bonus(msg.value.mul(COIN_PER_ETHER).div(1 ether)); // Compute the number of AllCodeCoin to send
+		uint coinToSend = bonus(msg.value.mul(COIN_PER_ETHER).div(1 ether)); // Compute the number of DARFtoken to send
 		require(!(coinToSend.add(coinSentToEther) > MAX_CAP));	
 
 		 Backer backer = backers[beneficiary];
-		coin.transfer(beneficiary, coinToSend); // Transfer AllCodeCoins right now 
+		coin.transfer(beneficiary, coinToSend); // Transfer DARFtokens right now
 
 		backer.coinSent = backer.coinSent.add(coinToSend);
 		backer.weiReceived = backer.weiReceived.add(msg.value); // Update the total wei collected during the crowdfunding for this backer    
@@ -133,7 +133,7 @@ contract Crowdsale is Pausable, PullPayment {
 	
 
 	/*
-	 *Compute the AllCodeCoin bonus according to the investment period
+	 *Compute the DARFtoken bonus according to the investment period
 	 */
 	function bonus(uint amount) internal constant returns (uint) {
 		if (now < startTime.add(2 days)) return amount.add(amount.div(5));   // bonus 20%
@@ -154,7 +154,7 @@ contract Crowdsale is Pausable, PullPayment {
 		require(multisigEther.send(this.balance)); // Move the remaining Ether to the multisig address
 		
 		uint remains = coin.balanceOf(this);
-		if (remains > 0) { // Burn the rest of AllCodeCoins
+		if (remains > 0) { // Burn the rest of DARFtokens
 			require(coin.burn(remains)) ;
 		}
 		crowdsaleClosed = true;
@@ -176,9 +176,9 @@ contract Crowdsale is Pausable, PullPayment {
 	}
 
 	/**
-	 * Manually back AllCodeCoin owner address.
+	 * Manually back DARFtoken owner address.
 	 */
-	function backAllCodeCoinOwner() onlyOwner public {
+	function backDARFtokenOwner() onlyOwner public {
 		coin.transferOwnership(owner);
 	}
 
@@ -192,7 +192,7 @@ contract Crowdsale is Pausable, PullPayment {
 		require(!(remains > minCoinsToSell));
 
 		Backer backer = backers[owner];
-		coin.transfer(owner, remains); // Transfer AllCodeCoins right now 
+		coin.transfer(owner, remains); // Transfer DARFtokens right now
 
 		backer.coinSent = backer.coinSent.add(remains);
 
@@ -206,8 +206,8 @@ contract Crowdsale is Pausable, PullPayment {
 
 	/* 
   	 * When MIN_CAP is not reach:
-  	 * 1) backer call the "approve" function of the AllCodeCoin token contract with the amount of all AllCodeCoins they got in order to be refund
-  	 * 2) backer call the "refund" function of the Crowdsale contract with the same amount of AllCodeCoins
+  	 * 1) backer call the "approve" function of the DARFtoken token contract with the amount of all DARFtokens they got in order to be refund
+  	 * 2) backer call the "refund" function of the Crowdsale contract with the same amount of DARFtokens
    	 * 3) backer call the "withdrawPayments" function of the Crowdsale contract to get a refund in ETH
    	 */
 	function refund(uint _value) minCapNotReached public {

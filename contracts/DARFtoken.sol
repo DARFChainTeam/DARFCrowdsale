@@ -5,22 +5,22 @@ import "./Ownable.sol";
 
 
 /**
- *  AllCodeCoin token contract. Implements
+ *  DARFtoken token contract. Implements
  */
-contract AllCodeCoin is StandardToken, Ownable {
-  string public constant name = "AllCodeCoin";
-  string public constant symbol = "ALLC";
-  uint public constant decimals = 6;
+contract DARFtoken is StandardToken, Ownable {
+  string public constant name = "DARFtoken";
+  string public constant symbol = "DARF";
+  uint public constant decimals = 18;
 
 
   // Constructor
-  function AllCodeCoin() {
-      totalSupply = 1000000000000000;
+  function DARFtoken() {
+      totalSupply = 84000000;
       balances[msg.sender] = totalSupply; // Send all tokens to owner
   }
 
   /**
-   *  Burn away the specified amount of AllCodeCoin tokens
+   *  Burn away the specified amount of DARFtoken tokens
    */
   function burn(uint _value) onlyOwner returns (bool) {
     balances[msg.sender] = balances[msg.sender].sub(_value);

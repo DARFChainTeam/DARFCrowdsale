@@ -1,4 +1,4 @@
-var AllCodeCoin = artifacts.require("./AllCodeCoin.sol");
+var DARFtoken = artifacts.require("./DARFtoken.sol");
 var Crowdsale = artifacts.require("./Crowdsale.sol");
 
 var TOTAL_COINS = 1000000000000000;
@@ -27,16 +27,16 @@ contract('MainFlow', function(accounts) {
   }
 
 
-  it("should put 1,000,000,000.000000 AllCodeCoin in the owner account", function() {
-    return AllCodeCoin.deployed().then(function(instance) {
+  it("should put 1,000,000,000.000000 DARFtoken in the owner account", function() {
+    return DARFtoken.deployed().then(function(instance) {
       return instance.balanceOf.call(owner);
     }).then(function(balance) {
       assert.equal(balance.valueOf(), TOTAL_COINS, "1,000,000,000.000000 wasn't in the owner account");
     });
   });
 
-  it("Send 600,000,000.000000 AllCodeCoin to Crowdsale contract", function() {
-    return AllCodeCoin.deployed().then(function(coin) {
+  it("Send 600,000,000.000000 DARFtoken to Crowdsale contract", function() {
+    return DARFtoken.deployed().then(function(coin) {
       return coin.transfer(Crowdsale.address, CROWDSALE_CAP, {from: owner}).then(function (txn) {
         return coin.balanceOf.call(Crowdsale.address);
       });
@@ -78,7 +78,7 @@ contract('MainFlow', function(accounts) {
         }); 
 
         return crowd.sendTransaction({from: buyer, to: crowd.address, value: web3.toWei(SEND_ETHER, "ether")}).then(function(txn) {
-          return AllCodeCoin.deployed().then(function(coin) {
+          return DARFtoken.deployed().then(function(coin) {
             return coin.balanceOf.call(buyer);
           });
        })
@@ -89,7 +89,7 @@ contract('MainFlow', function(accounts) {
   });
 
   it("Try to reserve the payments {from: buyer}", function() {
-    return AllCodeCoin.deployed().then(function(coin) {
+    return DARFtoken.deployed().then(function(coin) {
       return coin.balanceOf.call(buyer).then(function(balance) {
         return Crowdsale.deployed().then(function(crowd) {
           console.log('Buyer ALLC: ' + balance.valueOf());
@@ -118,7 +118,7 @@ contract('MainFlow', function(accounts) {
 
     return Crowdsale.deployed().then(function(crowd) {
        return crowd.sendTransaction({from: buyer, to: crowd.address, value: web3.toWei(1, "ether")}).then(function(txn) {
-          return AllCodeCoin.deployed().then(function(coin) {
+          return DARFtoken.deployed().then(function(coin) {
             return coin.balanceOf.call(buyer);
           });
        })
@@ -129,7 +129,7 @@ contract('MainFlow', function(accounts) {
   });
 
   it("Try to burn coins", function() {
-    return AllCodeCoin.deployed().then(function(coin) {
+    return DARFtoken.deployed().then(function(coin) {
       return coin.balanceOf.call(buyer).then(function(balance) {
         console.log("Buyer balance: ", balance.valueOf(), " ALLC");
         return coin.burn(balance.valueOf()).then(function() {
@@ -164,9 +164,9 @@ contract('MainFlow', function(accounts) {
     });
   });
 
-  it("Try to invoke backAllCodeCoinOwner {from: buyer}", function() {
+  it("Try to invoke backDARFtokenOwner {from: buyer}", function() {
     return Crowdsale.deployed().then(function(crowd) {
-      return crowd.backAllCodeCoinOwner({from: buyer}).then(function() {
+      return crowd.backDARFtokenOwner({from: buyer}).then(function() {
         assert(false, "Throw was supposed to throw but didn't.");
       }).catch(function(error) {
         console.log("Throw was happened. Test succeeded.");
@@ -174,13 +174,13 @@ contract('MainFlow', function(accounts) {
     });
   });
 
-  it("Invoke backAllCodeCoinOwner {from: Crowdsale contract}", function() {
+  it("Invoke backDARFtokenOwner {from: Crowdsale contract}", function() {
     return Crowdsale.deployed().then(function(crowd) {
-      return crowd.backAllCodeCoinOwner().then(function() {
-        return AllCodeCoin.deployed().then(function(coin) {
+      return crowd.backDARFtokenOwner().then(function() {
+        return DARFtoken.deployed().then(function(coin) {
           return coin.owner.call().then(function(coinOwner) {
-            console.log("AllCodeCoin owner was changed to: " + coinOwner);
-            assert.equal(coinOwner, owner, "AllCodeCoin owner addresws must be equals to Crowdsale owner address");
+            console.log("DARFtoken owner was changed to: " + coinOwner);
+            assert.equal(coinOwner, owner, "DARFtoken owner addresws must be equals to Crowdsale owner address");
           })              
         })
       }).catch(function(error) {
@@ -190,9 +190,9 @@ contract('MainFlow', function(accounts) {
   });
 
 
-  it("Invoke backAllCodeCoinOwner one more time {from: Crowdsale contract}", function() {
+  it("Invoke backDARFtokenOwner one more time {from: Crowdsale contract}", function() {
     return Crowdsale.deployed().then(function(crowd) {
-      return crowd.backAllCodeCoinOwner().then(function() {
+      return crowd.backDARFtokenOwner().then(function() {
         assert(false, "Throw was supposed to throw but didn't.");
       }).catch(function(error) {
         console.log("Throw was happened. Test succeeded.");

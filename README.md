@@ -1,4 +1,4 @@
-# AllCodeCoin-token
+# DARFtoken-token
 
 Cryptocurrency based on Ethereum for healthcare rewards
 ## Requirements

@@ -1,5 +1,5 @@
 var SafeMath = artifacts.require("./SafeMath.sol");
-var AllCodeCoin = artifacts.require("./AllCodeCoin.sol");
+var DARFtoken = artifacts.require("./DARFtoken.sol");
 var Crowdsale = artifacts.require("./Crowdsale.sol");
 
 
@@ -17,22 +17,22 @@ module.exports = function(deployer) {
 	//deploy SafeMath from the owner of the crowdsale
 	deployer.deploy(SafeMath, { from: owner });
 
-	//link SafeMath to AllCodeCoin
-	deployer.link(SafeMath, AllCodeCoin);
+	//link SafeMath to DARFtoken
+	deployer.link(SafeMath, DARFtoken);
 
-	//deploy the AllCodeCoin using the owner account
-	return deployer.deploy(AllCodeCoin, { from: owner }).then(function() {
-		//log the address of the AllCodeCoin 
-		console.log("AllCodeCoin address: " + AllCodeCoin.address);
+	//deploy the DARFtoken using the owner account
+	return deployer.deploy(DARFtoken, { from: owner }).then(function() {
+		//log the address of the DARFtoken
+		console.log("DARFtoken address: " + DARFtoken.address);
 
 		//deploy the Crowdsale 
-		return deployer.deploy(Crowdsale, AllCodeCoin.address, wallet, { from: owner }).then(function() {
+		return deployer.deploy(Crowdsale, DARFtoken.address, wallet, { from: owner }).then(function() {
 			console.log("Crowdsale address: " + Crowdsale.address);
-			return AllCodeCoin.deployed().then(function(coin) {
+			return DARFtoken.deployed().then(function(coin) {
 				return coin.owner.call().then(function(owner) {
-					console.log("AllCodeCoin owner : " + owner);
+					console.log("DARFtoken owner : " + owner);
 					return coin.transferOwnership(Crowdsale.address, {from: owner}).then(function(txn) {
-						console.log("AllCodeCoin owner was changed: " + Crowdsale.address);		
+						console.log("DARFtoken owner was changed: " + Crowdsale.address);
 					});
 				})
 			});

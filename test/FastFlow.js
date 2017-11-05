@@ -1,4 +1,4 @@
-var AllCodeCoin = artifacts.require("./AllCodeCoin.sol");
+var DARFtoken = artifacts.require("./DARFtoken.sol");
 var Crowdsale = artifacts.require("./Crowdsale.sol");
 
 var TOTAL_COINS = 1000000000000000;
@@ -27,7 +27,7 @@ contract('FastFlow', function(accounts) {
     // console.log("Crowdsale balance", web3.fromWei(crowdsaleBalance, "ether").toString(), " ETHER");
 
 
-    return AllCodeCoin.deployed().then(function(instance) {
+    return DARFtoken.deployed().then(function(instance) {
       return instance.balanceOf.call(owner)
     .then(function(balance) {
       console.log("Owner balance: ", web3.fromWei(ownerBalance, "ether").toString(), " ETHER / ", balance.valueOf(), " ALLC");
@@ -44,9 +44,9 @@ contract('FastFlow', function(accounts) {
 
   }
 
-  it("should put 1,000,000,000.000000 AllCodeCoin in the owner account", function() {
+  it("should put 1,000,000,000.000000 DARFtoken in the owner account", function() {
     return printBalance().then(function() {
-      return AllCodeCoin.deployed().then(function(instance) {
+      return DARFtoken.deployed().then(function(instance) {
         return instance.balanceOf.call(owner);
       }).then(function(balance) {
         assert.equal(balance.valueOf(), TOTAL_COINS, "1,000,000,000.000000 wasn't in the owner account.");
@@ -54,8 +54,8 @@ contract('FastFlow', function(accounts) {
     })
   });
 
-  it("Send 600,000,000.000000 AllCodeCoin to Crowdsale contract", function() {
-    return AllCodeCoin.deployed().then(function(coin) {
+  it("Send 600,000,000.000000 DARFtoken to Crowdsale contract", function() {
+    return DARFtoken.deployed().then(function(coin) {
       return coin.transfer(Crowdsale.address, CROWDSALE_CAP, {from: owner}).then(function (txn) {
         return coin.balanceOf.call(Crowdsale.address);
       });
@@ -81,7 +81,7 @@ contract('FastFlow', function(accounts) {
     
     return Crowdsale.deployed().then(function(crowd) {
        return crowd.sendTransaction({from: buyer, to: crowd.address, value: investSum}).then(function(txn) {
-          return AllCodeCoin.deployed().then(function(coin) {
+          return DARFtoken.deployed().then(function(coin) {
             return coin.balanceOf.call(buyer);
           });
        })
@@ -105,7 +105,7 @@ contract('FastFlow', function(accounts) {
   });
 
   it("Buy one more 6,000 coins", function() {
-    return AllCodeCoin.deployed().then(function(coin) {
+    return DARFtoken.deployed().then(function(coin) {
       return coin.balanceOf.call(buyer).then(function(oldBalance) {
         return Crowdsale.deployed().then(function(crowd) {
           return crowd.sendTransaction({from: buyer, to: crowd.address, value: web3.toWei(100, "finney")});
@@ -148,7 +148,7 @@ contract('FastFlow', function(accounts) {
 
 
        return crowd.getRemainCoins({from: owner}).then(function(txn) {
-          return AllCodeCoin.deployed().then(function(coin) {
+          return DARFtoken.deployed().then(function(coin) {
             return coin.balanceOf.call(crowd.address);
           });
        })

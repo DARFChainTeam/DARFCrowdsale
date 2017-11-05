@@ -1,4 +1,4 @@
-var AllCodeCoin = artifacts.require("./AllCodeCoin.sol");
+var DARFtoken = artifacts.require("./DARFtoken.sol");
 var Crowdsale = artifacts.require("./Crowdsale.sol");
 
 var TOTAL_COINS = 1000000000000000;
@@ -33,16 +33,16 @@ contract('RefundFlow', function(accounts) {
   });
 
 
-  it("should put 1,000,000,000.000000 AllCodeCoin in the owner account", function() {
-    return AllCodeCoin.deployed().then(function(instance) {
+  it("should put 1,000,000,000.000000 DARFtoken in the owner account", function() {
+    return DARFtoken.deployed().then(function(instance) {
       return instance.balanceOf.call(owner);
     }).then(function(balance) {
       assert.equal(balance.valueOf(), TOTAL_COINS, "1,000,000,000.000000 wasn't in the owner account.");
     });
   });
 
-  it("Send 600,000,000.000000 AllCodeCoin to Crowdsale contract", function() {
-    return AllCodeCoin.deployed().then(function(coin) {
+  it("Send 600,000,000.000000 DARFtoken to Crowdsale contract", function() {
+    return DARFtoken.deployed().then(function(coin) {
       return coin.transfer(Crowdsale.address, CROWDSALE_CAP, {from: owner}).then(function (txn) {
         return coin.balanceOf.call(Crowdsale.address);
       });
@@ -134,7 +134,7 @@ contract('RefundFlow', function(accounts) {
   it("Buy only 6,000,000 coins", function() {
     return Crowdsale.deployed().then(function(crowd) {
        return crowd.sendTransaction({from: buyer, to: crowd.address, value: web3.toWei(1000, "ether")}).then(function(txn) {
-          return AllCodeCoin.deployed().then(function(coin) {
+          return DARFtoken.deployed().then(function(coin) {
             return coin.balanceOf.call(buyer);
           });
        })
@@ -181,7 +181,7 @@ contract('RefundFlow', function(accounts) {
   });
 
   it("Try to burn coins", function() {
-    return AllCodeCoin.deployed().then(function(coin) {
+    return DARFtoken.deployed().then(function(coin) {
       return coin.balanceOf.call(buyer).then(function(balance) {
         console.log("Buyer balance: ", balance.valueOf(), " ALLC");
         return coin.burn(balance.valueOf()).then(function() {
@@ -194,7 +194,7 @@ contract('RefundFlow', function(accounts) {
   });
 
   it("Approve the payments {from: buyer}", function() {
-    return AllCodeCoin.deployed().then(function(coin) {
+    return DARFtoken.deployed().then(function(coin) {
       return coin.balanceOf.call(buyer).then(function(balance) {
         return Crowdsale.deployed().then(function(crowd) {
           console.log('Buyer ALLC: ' + balance.valueOf());
@@ -212,7 +212,7 @@ contract('RefundFlow', function(accounts) {
   });
 
   it("Reserve the payments {from: buyer}", function() {
-    return AllCodeCoin.deployed().then(function(coin) {
+    return DARFtoken.deployed().then(function(coin) {
       return coin.balanceOf.call(buyer).then(function(balance) {
         return Crowdsale.deployed().then(function(crowd) {
           console.log('Buyer ALLC: ' + balance.valueOf());
