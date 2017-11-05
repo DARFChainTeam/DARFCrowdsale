@@ -42,7 +42,7 @@ contract Crowdsale is Pausable, PullPayment {
     /* But only 49%  of profit can be distributed this way
     */
 
-    fixed public constant MAX_INVEST_SHARE = 49.00; //%
+    fixed public  MAX_INVEST_SHARE = 49.00; //%
 
 /* Crowdsale period */
 	uint private constant CROWDSALE_PERIOD = 42 days;
@@ -78,7 +78,7 @@ contract Crowdsale is Pausable, PullPayment {
 	/* Backers Ether indexed by their Ethereum address */
 	mapping(address => Backer) public backers;
 
-    mapping(address => Investor) public investors; // list of investors
+    mapping(address => Investor) public investors; // list of potential investors
 
 
 	/*
@@ -141,15 +141,15 @@ contract Crowdsale is Pausable, PullPayment {
 		backer.weiReceived = backer.weiReceived.add(msg.value); // Update the total wei collected during the crowdfunding for this backer    
         if (backer.weiReceived > MIN_INVEST_BUY) {
 
-            this_buy = fixed(msg.value);
+			fixed this_buy = fixed(msg.value);
             // calculate profit share
-            fixed share =this_buy.div(fixed(MIN_INVEST_BUY));
+            fixed share = this_buy / fixed(MIN_INVEST_BUY);
             // compare to all profit share will LT 49%
             if (MAX_INVEST_SHARE > share) {
-                MAX_INVEST_SHARE.sub(share);
+                MAX_INVEST_SHARE = MAX_INVEST_SHARE - share;
                 // add an investor
                 Investor investor = investors[beneficiary];
-                investor.profitshare.add(share);
+                investor.profitshare = investor.profitshare + share;
 
 
             }
