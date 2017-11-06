@@ -1,7 +1,7 @@
 var DARFtoken = artifacts.require("./DARFtoken.sol");
 var Crowdsale = artifacts.require("./Crowdsale.sol");
 
-var TOTAL_COINS = 84000000;
+var TOTAL_COINS = 84000000 ;
 var CROWDSALE_CAP = 80000000;
 var DARF_PER_ETHER = 500;
 var PERIOD_2_DAYS = 2*24*60*60;

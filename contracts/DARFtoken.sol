@@ -15,7 +15,7 @@ contract DARFtoken is StandardToken, Ownable {
 
   // Constructor
   function DARFtoken() {
-      totalSupply = 84000000;
+      totalSupply = 84000000 ether;
       balances[msg.sender] = totalSupply; // Send all tokens to owner
   }
 

@@ -1,10 +1,8 @@
 var DARFtoken = artifacts.require("./DARFtoken.sol");
 var Crowdsale = artifacts.require("./Crowdsale.sol");
 
-var TOTAL_COINS = 84000000;
-var CROWDSALE_CAP = 80000000;
-var DARF_PER_ETHER = 500;
-var PERIOD_2_DAYS = 2*24*60*60;
+
+
 
 contract('start', function(accounts) {
 
@@ -14,6 +12,8 @@ contract('start', function(accounts) {
     var buyer = eth.accounts[2];
     var thief = eth.accounts[3];
 
+    var TOTAL_COINS = web3.toWei(84000000, "ether" );
+    var CROWDSALE_CAP = web3.toWei(80000000, "ether" );
 
     function printBalance() {
         const ownerBalance = web3.eth.getBalance(owner);

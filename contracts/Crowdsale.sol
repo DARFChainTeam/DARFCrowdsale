@@ -48,7 +48,7 @@ contract Crowdsale is Pausable, PullPayment {
 	uint private constant CROWDSALE_PERIOD = 42 days;
 
 	/* Number of DARFtokens per Ether */
-	uint public constant COIN_PER_ETHER = 500; // 500 DARF per ether
+	uint public constant COIN_PER_ETHER = 500 ether; // 500 DARF per ether
 
 
 	/*
