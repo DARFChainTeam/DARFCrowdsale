@@ -12,8 +12,8 @@ contract('start', function(accounts) {
     var buyer = eth.accounts[2];
     var thief = eth.accounts[3];
 
-    var TOTAL_COINS = web3.toWei(84000000, "ether" );
-    var CROWDSALE_CAP = web3.toWei(80000000, "ether" );
+    var TOTAL_COINS = web3.toWei('84000000', "ether" );
+    var CROWDSALE_CAP = web3.toWei('80000000', "ether" );
 
     function printBalance() {
         const ownerBalance = web3.eth.getBalance(owner);
