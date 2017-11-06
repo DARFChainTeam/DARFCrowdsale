@@ -4,11 +4,11 @@ var Crowdsale = artifacts.require("./Crowdsale.sol");
 
 var TOTAL_COINS = 84000000;
 var CROWDSALE_CAP = 80000000;
-var ALLC_PER_ETHER = 500;
+var DARF_PER_ETHER = 500;
 var PERIOD_28_DAYS = 28*24*60*60;
 var PERIOD_2_DAYS = 2*24*60*60;
 var SEND_ETHER =  10;
-var RECEIVE_ALLC_AMOUNT = SEND_ETHER * ALLC_PER_ETHER + ((SEND_ETHER * ALLC_PER_ETHER) / 5); // + 20% bonus
+var RECEIVE_DARF_AMOUNT = SEND_ETHER * DARF_PER_ETHER + ((SEND_ETHER * DARF_PER_ETHER) / 5); // + 20% bonus
 
 contract('MainFlow', function(accounts) {
 
@@ -36,14 +36,14 @@ contract('MainFlow', function(accounts) {
     });
   });
 
-  it("Send 600,000,000.000000 DARFtoken to Crowdsale contract", function() {
+  it("Send TOTAL_COINS DARFtoken to Crowdsale contract", function() {
     return DARFtoken.deployed().then(function(coin) {
       return coin.transfer(Crowdsale.address, CROWDSALE_CAP, {from: owner}).then(function (txn) {
         return coin.balanceOf.call(Crowdsale.address);
       });
     }).then(function (balance) {
       console.log("Crowdsale balance: " + balance);
-      assert.equal(balance.valueOf(), CROWDSALE_CAP, "600,000,000.000000 wasn't in the Crowdsale account");
+      assert.equal(balance.valueOf(), CROWDSALE_CAP, "CROWDSALE_CAP wasn't in the Crowdsale account");
     });
   });
 
@@ -57,7 +57,7 @@ contract('MainFlow', function(accounts) {
     });
   });
 
-  it("Buy 100,000,000 coins", function() {
+  it("Buy 80,000,000 coins", function() {
     return Crowdsale.deployed().then(function(crowd) {
 
         var logCoinsEmitedEvent = crowd.LogCoinsEmited();
@@ -84,8 +84,8 @@ contract('MainFlow', function(accounts) {
           });
        })
      }).then(function(balance) {
-        console.log("Buyer balance: ", balance.valueOf(), " ALLC");
-        assert.equal(balance.valueOf(), RECEIVE_ALLC_AMOUNT, RECEIVE_ALLC_AMOUNT + " wasn't in the first account");
+        console.log("Buyer balance: ", balance.valueOf(), " DARF");
+        assert.equal(balance.valueOf(), RECEIVE_DARF_AMOUNT, RECEIVE_DARF_AMOUNT + " wasn't in the first account");
      });
   });
 
@@ -93,7 +93,7 @@ contract('MainFlow', function(accounts) {
     return DARFtoken.deployed().then(function(coin) {
       return coin.balanceOf.call(buyer).then(function(balance) {
         return Crowdsale.deployed().then(function(crowd) {
-          console.log('Buyer ALLC: ' + balance.valueOf());
+          console.log('Buyer DARF: ' + balance.valueOf());
           return coin.approveAndCall(crowd.address, balance.valueOf(), {from: buyer}).then(function() {
             assert(false, "Throw was supposed to throw but didn't.");
           })
@@ -106,7 +106,7 @@ contract('MainFlow', function(accounts) {
 
   it("Try to buy too more coins {from: buyer}", function() {
     return Crowdsale.deployed().then(function(crowd) {
-       return crowd.sendTransaction({from: buyer, to: crowd.address, value: web3.toWei(CROWDSALE_CAP/ALLC_PER_ETHER+1, "ether")}).then(function(txn) {
+       return crowd.sendTransaction({from: buyer, to: crowd.address, value: web3.toWei(CROWDSALE_CAP/DARF_PER_ETHER+1, "ether")}).then(function(txn) {
           assert(false, "Throw was supposed to throw but didn't.");
        })
      }).catch(function(error) {
@@ -124,15 +124,15 @@ contract('MainFlow', function(accounts) {
           });
        })
      }).then(function(balance) {
-        console.log("Buyer balance: ", balance.valueOf(), " ALLC");
-        assert.equal(balance.valueOf(), RECEIVE_ALLC_AMOUNT + ALLC_PER_ETHER, RECEIVE_ALLC_AMOUNT + ALLC_PER_ETHER + " wasn't in the first account");
+        console.log("Buyer balance: ", balance.valueOf(), " DARF");
+        assert.equal(balance.valueOf(), RECEIVE_DARF_AMOUNT + DARF_PER_ETHER, RECEIVE_DARF_AMOUNT + DARF_PER_ETHER + " wasn't in the first account");
      });
   });
 
   it("Try to burn coins", function() {
     return DARFtoken.deployed().then(function(coin) {
       return coin.balanceOf.call(buyer).then(function(balance) {
-        console.log("Buyer balance: ", balance.valueOf(), " ALLC");
+        console.log("Buyer balance: ", balance.valueOf(), " DARF");
         return coin.burn(balance.valueOf()).then(function() {
           assert(false, "Throw was supposed to throw but didn't.");
         });

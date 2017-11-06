@@ -3,7 +3,7 @@ var Crowdsale = artifacts.require("./Crowdsale.sol");
 
 var TOTAL_COINS = 84000000;
 var CROWDSALE_CAP = 80000000;
-var ALLC_PER_ETHER = 500;
+var DARF_PER_ETHER = 500;
 var PERIOD_2_DAYS = 2*24*60*60;
 
 contract('FastFlow', function(accounts) {
@@ -30,13 +30,13 @@ contract('FastFlow', function(accounts) {
     return DARFtoken.deployed().then(function(instance) {
       return instance.balanceOf.call(owner)
     .then(function(balance) {
-      console.log("Owner balance: ", web3.fromWei(ownerBalance, "ether").toString(), " ETHER / ", balance.valueOf(), " ALLC");
+      console.log("Owner balance: ", web3.fromWei(ownerBalance, "ether").toString(), " ETHER / ", balance.valueOf(), " DARF");
       return instance.balanceOf.call(buyer); 
     }).then(function(balance) {
-      console.log("Buyer balance: ", web3.fromWei(buyerBalance, "ether").toString(), " ETHER / ", balance.valueOf(), " ALLC");
+      console.log("Buyer balance: ", web3.fromWei(buyerBalance, "ether").toString(), " ETHER / ", balance.valueOf(), " DARF");
       return instance.balanceOf.call(Crowdsale.address); 
     }).then(function(balance) {
-      console.log("Crowdsale balance: ", web3.fromWei(crowdsaleBalance, "ether").toString(), " ETHER / ", balance.valueOf(), " ALLC");
+      console.log("Crowdsale balance: ", web3.fromWei(crowdsaleBalance, "ether").toString(), " ETHER / ", balance.valueOf(), " DARF");
     })
 
   })
@@ -44,24 +44,24 @@ contract('FastFlow', function(accounts) {
 
   }
 
-  it("should put 1,000,000,000.000000 DARFtoken in the owner account", function() {
+  it("should put TOTAL_COINS DARFtoken in the owner account", function() {
     return printBalance().then(function() {
       return DARFtoken.deployed().then(function(instance) {
         return instance.balanceOf.call(owner);
       }).then(function(balance) {
-        assert.equal(balance.valueOf(), TOTAL_COINS, "1,000,000,000.000000 wasn't in the owner account.");
+        assert.equal(balance.valueOf(), TOTAL_COINS, "TOTAL_COINS wasn't in the owner account.");
       });
     })
   });
 
-  it("Send 600,000,000.000000 DARFtoken to Crowdsale contract", function() {
+  it("Send DARFtoken to Crowdsale contract", function() {
     return DARFtoken.deployed().then(function(coin) {
       return coin.transfer(Crowdsale.address, CROWDSALE_CAP, {from: owner}).then(function (txn) {
         return coin.balanceOf.call(Crowdsale.address);
       });
     }).then(function (balance) {
       console.log("Crowdsale balance: " + balance);
-      assert.equal(balance.valueOf(), CROWDSALE_CAP, "600,000,000.000000 wasn't in the Crowdsale account");
+      assert.equal(balance.valueOf(), CROWDSALE_CAP, "CROWDSALE_CAP wasn't in the Crowdsale account");
     });
   });
 
@@ -77,7 +77,7 @@ contract('FastFlow', function(accounts) {
   it("Buy 5,994,000 coins", function() {
     web3.evm.increaseTime(PERIOD_2_DAYS);
 
-    var investSum = web3.toWei(100000, "ether") - web3.toWei(101, "finney");
+    var investSum = web3.toWei(10000, "ether") - web3.toWei(101, "finney");
     
     return Crowdsale.deployed().then(function(crowd) {
        return crowd.sendTransaction({from: buyer, to: crowd.address, value: investSum}).then(function(txn) {
@@ -86,9 +86,9 @@ contract('FastFlow', function(accounts) {
           });
        })
      }).then(function(balance) {
-        console.log("Buyer balance: ", balance.valueOf(), " ALLC");
+        console.log("Buyer balance: ", balance.valueOf(), " DARF");
 
-        var count = parseInt(investSum * (ALLC_PER_ETHER) / (web3.toWei(1, "ether")));
+        var count = parseInt(investSum * (DARF_PER_ETHER) / (web3.toWei(1, "ether")));
         assert.equal(balance.valueOf(), count, "10000 wasn't in the first account.");
      });
   });
@@ -112,7 +112,7 @@ contract('FastFlow', function(accounts) {
         }).then(function(txn) {
           return coin.balanceOf.call(buyer);
         }).then(function(newBalance) {
-          var count = parseInt(web3.toWei(100, "finney") * (ALLC_PER_ETHER) / (web3.toWei(1, "ether")));
+          var count = parseInt(web3.toWei(100, "finney") * (DARF_PER_ETHER) / (web3.toWei(1, "ether")));
 
           var balanceMustBe = (newBalance.valueOf() - count);
 
@@ -153,7 +153,7 @@ contract('FastFlow', function(accounts) {
           });
        })
      }).then(function(balance) {
-        console.log("Crowdsale balance: ", balance.valueOf(), " ALLC");
+        console.log("Crowdsale balance: ", balance.valueOf(), " DARF");
         assert.equal(balance.valueOf(), 0, "Crowdsale balance must be empty.");
      });
     })

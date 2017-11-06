@@ -9,7 +9,7 @@ import "./Ownable.sol";
  */
 contract DARFtoken is StandardToken, Ownable {
   string public constant name = "DARFtoken";
-  string public constant symbol = "DARF";
+  string public constant symbol = "DAR";
   uint public constant decimals = 18;
 
 
