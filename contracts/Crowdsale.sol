@@ -15,7 +15,7 @@ contract Crowdsale is Pausable, PullPayment {
 
   	struct Backer {
 		uint weiReceived; // Amount of Ether given
-		uint coinSent;
+		uint256 coinSent;
 	}
 
 
@@ -23,10 +23,10 @@ contract Crowdsale is Pausable, PullPayment {
 	* Constants
 	*/
 	/* Minimum number of DARFtoken to sell */
-	uint public constant MIN_CAP = 10000000; // 1,000,000 DARFtokens
+	uint public constant MIN_CAP = 1000000 ether; // 1,000,000 DARFtokens
 
 	/* Maximum number of DARFtoken to sell */
-	uint public constant MAX_CAP = 80000000; // 80,000,000 DARFtokens
+	uint public constant MAX_CAP = 80000000 ether; // 80,000,000 DARFtokens
 
 	/* Minimum amount to BUY */
 	uint public constant MIN_BUY_ETHER = 100 finney;
@@ -131,7 +131,7 @@ contract Crowdsale is Pausable, PullPayment {
 	function receiveETH(address beneficiary) internal {
 		require(!(msg.value < MIN_BUY_ETHER)); // Don't accept funding under a predefined threshold
 		
-		uint coinToSend = bonus(msg.value.mul(COIN_PER_ETHER).div(1 ether)); // Compute the number of DARFtoken to send
+		uint256 coinToSend = bonus(msg.value.mul(COIN_PER_ETHER));//.div(1 ether)); // Compute the number of DARFtoken to send
 		require(!(coinToSend.add(coinSentToEther) > MAX_CAP));	
 
         Backer backer = backers[beneficiary];
@@ -167,7 +167,7 @@ contract Crowdsale is Pausable, PullPayment {
 	/*
 	 *Compute the DARFtoken bonus according to the BUYment period
 	 */
-	function bonus(uint amount) internal constant returns (uint) {
+	function bonus(uint256 amount) internal constant returns (uint256) {
 		/*
 			25%in the first 15 days
 			20% 16 days 18 days
