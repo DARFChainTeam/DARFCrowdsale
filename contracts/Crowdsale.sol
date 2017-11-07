@@ -149,19 +149,25 @@ contract Crowdsale is Pausable, PullPayment {
         if (backer.weiReceived > MIN_INVEST_BUY) {
 
             // calculate profit share
-            uint256 share = msg.value.mul(10000).div(MIN_INVEST_BUY);
-            // compare to all profit share will LT 49%
+            uint256 share = msg.value.mul(100).div(MIN_INVEST_BUY); // 100 = 1% from 10000
+			// compare to all profit share will LT 49%
 			LogInvestshare(msg.sender,share);
-			Investor investor = investors[beneficiary];
-			investor.coinSent = backer.coinSent;
-			investor.weiReceived = backer.weiReceived; // Update the total wei collected during the crowdfunding for this potential investor
-		if (true) { //}(MAX_INVEST_SHARE > share) {
-				MAX_INVEST_SHARE = MAX_INVEST_SHARE.sub(share);
+			if (MAX_INVEST_SHARE > share) {
+
+				Investor investor = investors[beneficiary];
+				investor.coinSent = backer.coinSent;
+				investor.weiReceived = backer.weiReceived; // Update the total wei collected during the crowdfunding for this potential investor
                 // add share to investor
-				investor.profitshare = investor.profitshare.add(share);
-				LogInvestshare(msg.sender,investor.profitshare);
+				if (investor.profitshare == 0 ) {
+					uint startshare = investor.weiReceived.mul(100).div(MIN_INVEST_BUY);
+					MAX_INVEST_SHARE = MAX_INVEST_SHARE.sub(startshare);
+					investor.profitshare = investor.profitshare.add(startshare);
+				} else {
+					MAX_INVEST_SHARE = MAX_INVEST_SHARE.sub(share);
+					investor.profitshare = investor.profitshare.add(share);
+					LogInvestshare(msg.sender,investor.profitshare);
 
-
+				}
             }
 
         }
