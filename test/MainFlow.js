@@ -36,7 +36,7 @@ contract('MainFlow', function(accounts) {
     });
   });
 
-  it("Send 600,000,000.000000 DARFtoken to Crowdsale contract", function() {
+  it("Send CROWDSALE_CAP DARFtoken to Crowdsale contract", function() {
     return DARFtoken.deployed().then(function(coin) {
       return coin.transfer(Crowdsale.address, CROWDSALE_CAP, {from: owner}).then(function (txn) {
         return coin.balanceOf.call(Crowdsale.address);

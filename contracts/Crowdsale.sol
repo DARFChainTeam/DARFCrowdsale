@@ -35,11 +35,13 @@ contract Crowdsale is Pausable, PullPayment {
     If backer buy over 1 000 000 DARF (2000 Ether) he/she can clame to become an investor after signing additional agreement with KYC procedure and get 1% of project profit per every 1 000 000 DARF
     */
     struct Investor {
+		uint weiReceived; // Amount of Ether given
+		uint256 coinSent;
         uint  profitshare; // Amount of Ether given
     }
     uint public constant MIN_INVEST_BUY = 2000 ether;
 
-    /* But only 49%  of profit can be distributed this way
+    /* But only 49%  of profit can be distributed this way for bakers who will be first
     */
 
     uint  public  MAX_INVEST_SHARE = 4900; //  4900 from 10000 is 49%, becouse Soliditi stil don't support fixed
@@ -65,6 +67,10 @@ contract Crowdsale is Pausable, PullPayment {
 
 	/* Number of DARFtokens sent to Ether contributors */
 	uint public coinSentToEther;
+
+	/* Number of DARFtokens sent to potential investors */
+	uint public invcoinSentToEther;
+
 
 	/* Crowdsale start time */
 	uint public startTime;
@@ -99,6 +105,7 @@ contract Crowdsale is Pausable, PullPayment {
 	*/
 	event LogReceivedETH(address addr, uint value);
 	event LogCoinsEmited(address indexed from, uint amount);
+	event LogInvestshare(address indexed from, uint share);
 
 	/*
 	 * Constructor
@@ -131,7 +138,7 @@ contract Crowdsale is Pausable, PullPayment {
 	function receiveETH(address beneficiary) internal {
 		require(!(msg.value < MIN_BUY_ETHER)); // Don't accept funding under a predefined threshold
 		
-		uint256 coinToSend = bonus(msg.value.mul(COIN_PER_ETHER));//.div(1 ether)); // Compute the number of DARFtoken to send
+		uint256 coinToSend = bonus(msg.value.mul(COIN_PER_ETHER));// Compute the number of DARFtoken to send
 		require(!(coinToSend.add(coinSentToEther) > MAX_CAP));	
 
         Backer backer = backers[beneficiary];
@@ -142,13 +149,17 @@ contract Crowdsale is Pausable, PullPayment {
         if (backer.weiReceived > MIN_INVEST_BUY) {
 
             // calculate profit share
-            uint share = msg.value.mul(10000).div(MIN_INVEST_BUY);
+            uint256 share = msg.value.mul(10000).div(MIN_INVEST_BUY);
             // compare to all profit share will LT 49%
-            if (MAX_INVEST_SHARE > share) {
-                MAX_INVEST_SHARE.sub(share);
+			LogInvestshare(msg.sender,share);
+			Investor investor = investors[beneficiary];
+			investor.coinSent = backer.coinSent;
+			investor.weiReceived = backer.weiReceived; // Update the total wei collected during the crowdfunding for this potential investor
+		if (true) { //}(MAX_INVEST_SHARE > share) {
+				MAX_INVEST_SHARE = MAX_INVEST_SHARE.sub(share);
                 // add share to investor
-                Investor investor = investors[beneficiary];
-                investor.profitshare.add(share);
+				investor.profitshare = investor.profitshare.add(share);
+				LogInvestshare(msg.sender,investor.profitshare);
 
 
             }
