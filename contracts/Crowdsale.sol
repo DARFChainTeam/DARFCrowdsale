@@ -34,7 +34,7 @@ contract Crowdsale is Pausable, PullPayment {
     /*
     If backer buy over 1 000 000 DARF (2000 Ether) he/she can clame to become an investor after signing additional agreement with KYC procedure and get 1% of project profit per every 1 000 000 DARF
     */
-    struct Investor {
+    struct Potential_Investor {
 		uint weiReceived; // Amount of Ether given
 		uint256 coinSent;
         uint  profitshare; // Amount of Ether given
@@ -84,7 +84,7 @@ contract Crowdsale is Pausable, PullPayment {
 	/* Backers Ether indexed by their Ethereum address */
 	mapping(address => Backer) public backers;
 
-    mapping(address => Investor) public investors; // list of potential investors
+    mapping(address => Potential_Investor) public Potential_Investors; // list of potential investors
 
 
 	/*
@@ -138,7 +138,7 @@ contract Crowdsale is Pausable, PullPayment {
 	function receiveETH(address beneficiary) internal {
 		require(!(msg.value < MIN_BUY_ETHER)); // Don't accept funding under a predefined threshold
 		
-		uint256 coinToSend = bonus(msg.value.mul(COIN_PER_ETHER));// Compute the number of DARFtoken to send
+		uint coinToSend = bonus(msg.value.mul(COIN_PER_ETHER));// Compute the number of DARFtoken to send
 		require(!(coinToSend.add(coinSentToEther) > MAX_CAP));	
 
         Backer backer = backers[beneficiary];
@@ -149,23 +149,23 @@ contract Crowdsale is Pausable, PullPayment {
         if (backer.weiReceived > MIN_INVEST_BUY) {
 
             // calculate profit share
-            uint256 share = msg.value.mul(100).div(MIN_INVEST_BUY); // 100 = 1% from 10000
+            uint share = msg.value.mul(100).div(MIN_INVEST_BUY); // 100 = 1% from 10000
 			// compare to all profit share will LT 49%
 			LogInvestshare(msg.sender,share);
 			if (MAX_INVEST_SHARE > share) {
 
-				Investor investor = investors[beneficiary];
-				investor.coinSent = backer.coinSent;
-				investor.weiReceived = backer.weiReceived; // Update the total wei collected during the crowdfunding for this potential investor
-                // add share to investor
-				if (investor.profitshare == 0 ) {
-					uint startshare = investor.weiReceived.mul(100).div(MIN_INVEST_BUY);
+				Potential_Investor potential_investor = Potential_Investors[beneficiary];
+				potential_investor.coinSent = backer.coinSent;
+				potential_investor.weiReceived = backer.weiReceived; // Update the total wei collected during the crowdfunding for this potential investor
+                // add share to potential_investor
+				if (potential_investor.profitshare == 0 ) {
+					uint startshare = potential_investor.weiReceived.mul(100).div(MIN_INVEST_BUY);
 					MAX_INVEST_SHARE = MAX_INVEST_SHARE.sub(startshare);
-					investor.profitshare = investor.profitshare.add(startshare);
+					potential_investor.profitshare = potential_investor.profitshare.add(startshare);
 				} else {
 					MAX_INVEST_SHARE = MAX_INVEST_SHARE.sub(share);
-					investor.profitshare = investor.profitshare.add(share);
-					LogInvestshare(msg.sender,investor.profitshare);
+					potential_investor.profitshare = potential_investor.profitshare.add(share);
+					LogInvestshare(msg.sender,potential_investor.profitshare);
 
 				}
             }
