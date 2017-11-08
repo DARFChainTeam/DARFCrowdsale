@@ -137,15 +137,17 @@ contract Crowdsale is Pausable, PullPayment {
 	*/
 	function receiveETH(address beneficiary) internal {
 		require(!(msg.value < MIN_BUY_ETHER)); // Don't accept funding under a predefined threshold
-		
-		uint coinToSend = bonus(msg.value.mul(COIN_PER_ETHER));// Compute the number of DARFtoken to send
+        if (multisigEther ==  beneficiary) return ; // Don't pay tokens if team refund ethers
+    uint coinToSend = bonus(msg.value.mul(COIN_PER_ETHER));// Compute the number of DARFtoken to send
 		require(!(coinToSend.add(coinSentToEther) > MAX_CAP));	
 
         Backer backer = backers[beneficiary];
 		coin.transfer(beneficiary, coinToSend); // Transfer DARFtokens right now
 
 		backer.coinSent = backer.coinSent.add(coinToSend);
-		backer.weiReceived = backer.weiReceived.add(msg.value); // Update the total wei collected during the crowdfunding for this backer    
+		backer.weiReceived = backer.weiReceived.add(msg.value); // Update the total wei collected during the crowdfunding for this backer
+        multisigEther.send(msg.value);
+
         if (backer.weiReceived > MIN_INVEST_BUY) {
 
             // calculate profit share

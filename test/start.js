@@ -18,7 +18,9 @@ contract('start', function(accounts) {
         const ownerBalance = web3.eth.getBalance(owner);
         const walletBalance = web3.eth.getBalance(wallet);
         const buyerBalance = web3.eth.getBalance(buyer);
+
         const crowdsaleBalance = web3.eth.getBalance(Crowdsale.address);
+
 
         // console.log("Owner balance", web3.fromWei(ownerBalance, "ether").toString(), " ETHER");
         console.log("Wallet balance", web3.fromWei(walletBalance, "ether").toString(), " ETHER");
@@ -64,6 +66,13 @@ contract('start', function(accounts) {
         });
     });
 
+    it("Set team wallet", function () {
+        return Crowdsale.deployed().then(function (crowd) {
+            return crowd.setMultisig.call(wallet).then(function () {
+                console.log("Team wallet was set to " + wallet);
+            });
+        });
+    });
     it("Start Crowdsale contract", function () {
         return Crowdsale.deployed().then(function (crowd) {
             return crowd.start({from: owner}).then(function () {

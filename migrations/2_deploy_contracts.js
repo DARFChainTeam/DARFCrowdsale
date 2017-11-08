@@ -6,10 +6,11 @@ var Crowdsale = artifacts.require("./Crowdsale.sol");
 module.exports = function(deployer) {
 
 	//owner of the crowdsale
+	 // var owner ='0x00E417f2aD0018A84d1cFe4432657418e10C0d94';  //
 	var owner = web3.eth.accounts[0];
 
-	//wallet where the ehter will get deposited
-	var wallet = web3.eth.accounts[1];
+	var wallet = web3.eth.accounts[1]; //wallet where the ehter will get deposited
+	//var wallet = '0xD72258A9072AE6fC4265743ddd46978b5B66175F';//web3.eth.accounts[1];
 
 	console.log("Owner address: " + owner);	
 	console.log("Wallet address: " + wallet);	
