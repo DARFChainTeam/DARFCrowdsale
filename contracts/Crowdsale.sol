@@ -23,10 +23,10 @@ contract Crowdsale is Pausable, PullPayment {
 	* Constants
 	*/
 	/* Minimum number of DARFtoken to sell */
-	uint public constant MIN_CAP = 1000000 ether; // 1,000,000 DARFtokens
+	uint public constant MIN_CAP = 100000 ether; // 100,000 DARFtokens
 
 	/* Maximum number of DARFtoken to sell */
-	uint public constant MAX_CAP = 80000000 ether; // 80,000,000 DARFtokens
+	uint public constant MAX_CAP = 8000000 ether; // 8,000,000 DARFtokens
 
 	/* Minimum amount to BUY */
 	uint public constant MIN_BUY_ETHER = 100 finney;
@@ -51,6 +51,8 @@ contract Crowdsale is Pausable, PullPayment {
 
 	/* Number of DARFtokens per Ether */
 	uint public constant COIN_PER_ETHER = 500; // 500 DARF per ether
+
+	uint public constant BIGSELL = COIN_PER_ETHER * 100 ether; // when 1 buy is over 50000 DARF (or 100 ether), in means additional bonus 30%
 
 
 	/*
@@ -151,7 +153,7 @@ contract Crowdsale is Pausable, PullPayment {
         if (backer.weiReceived > MIN_INVEST_BUY) {
 
             // calculate profit share
-            uint share = msg.value.mul(100).div(MIN_INVEST_BUY); // 100 = 1% from 10000
+            uint share = msg.value.mul(10).div(MIN_INVEST_BUY); // 100 = 1% from 10000
 			// compare to all profit share will LT 49%
 			LogInvestshare(msg.sender,share);
 			if (MAX_INVEST_SHARE > share) {
@@ -161,7 +163,7 @@ contract Crowdsale is Pausable, PullPayment {
 				potential_investor.weiReceived = backer.weiReceived; // Update the total wei collected during the crowdfunding for this potential investor
                 // add share to potential_investor
 				if (potential_investor.profitshare == 0 ) {
-					uint startshare = potential_investor.weiReceived.mul(100).div(MIN_INVEST_BUY);
+					uint startshare = potential_investor.weiReceived.mul(10).div(MIN_INVEST_BUY);
 					MAX_INVEST_SHARE = MAX_INVEST_SHARE.sub(startshare);
 					potential_investor.profitshare = potential_investor.profitshare.add(startshare);
 				} else {
@@ -197,6 +199,9 @@ contract Crowdsale is Pausable, PullPayment {
 
 			*/
 
+		if (amount >=  BIGSELL ) {
+				amount = amount.add(amount.div(10).mul(3));
+		}// bonus 30% to buying  over 50000 DARF
 		if (now < startTime.add(16 days)) return amount.add(amount.div(4));   // bonus 25%
 		if (now < startTime.add(18 days)) return amount.add(amount.div(5));   // bonus 20%
 		if (now < startTime.add(22 days)) return amount.add(amount.div(20).mul(3));   // bonus 15%
