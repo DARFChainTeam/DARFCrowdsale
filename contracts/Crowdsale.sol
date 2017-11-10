@@ -52,6 +52,8 @@ contract Crowdsale is Pausable, PullPayment {
 	/* Number of DARFtokens per Ether */
 	uint public constant COIN_PER_ETHER = 500; // 500 DARF per ether
 
+	uint public constant BIGSELL = COIN_PER_ETHER * 100 ether; // when 1 buy is over 50000 DARF (or 100 ether), in means additional bonus 30%
+
 
 	/*
 	* Variables
@@ -197,6 +199,9 @@ contract Crowdsale is Pausable, PullPayment {
 
 			*/
 
+		if (amount >=  BIGSELL ) {
+				amount = amount.add(amount.div(10).mul(3));
+		}// bonus 30% to buying  over 50000 DARF
 		if (now < startTime.add(16 days)) return amount.add(amount.div(4));   // bonus 25%
 		if (now < startTime.add(18 days)) return amount.add(amount.div(5));   // bonus 20%
 		if (now < startTime.add(22 days)) return amount.add(amount.div(20).mul(3));   // bonus 15%
