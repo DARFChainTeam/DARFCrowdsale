@@ -8,11 +8,12 @@ var CROWDSALE_CAP = 80000000000000000000000000;
 contract('start', function(accounts) {
 
     var eth = web3.eth;
-    var owner = eth.accounts[0];
-    var wallet = eth.accounts[1];
-    var buyer = eth.accounts[2];
-    var thief = eth.accounts[3];
-
+    var owner = "0xA370dDf42D9C41dfB1A6D7dAF0DB3b7e901a03B2";
+    var wallet = "0x86a080793F3bCB0b69f8D5A06CEb1AabdCa7E34f";
+    var buyer = "0xf71260Be31DC3c437dd90f91E7D71eaAAa4E0a8e";
+    var thief = "0xf71260Be31DC3c437dd90f91E7D71eaAAa4E0a8e";
+    
+    web3.personal.unlockAccount("0xa370ddf42d9c41dfb1a6d7daf0db3b7e901a03b2", "gfhjkm12345", 15000),"gfhjkm12345", 15000)
 
     function printBalance() {
         const ownerBalance = web3.eth.getBalance(owner);
