@@ -2,7 +2,7 @@ var DARFtoken = artifacts.require("./DARFtoken.sol");
 var Crowdsale = artifacts.require("./Crowdsale.sol");
 
 var TOTAL_COINS =   84000000000000000000000000;
-var CROWDSALE_CAP = 80000000000000000000000000;
+var CROWDSALE_CAP = 8000000000000000000000000;
 
 
 contract('start', function(accounts) {

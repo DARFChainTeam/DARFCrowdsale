@@ -47,7 +47,7 @@ contract Crowdsale is Pausable, PullPayment {
     uint  public  MAX_INVEST_SHARE = 4900; //  4900 from 10000 is 49%, becouse Soliditi stil don't support fixed
 
 /* Crowdsale period */
-	uint private constant CROWDSALE_PERIOD = 42 days;
+	uint private constant CROWDSALE_PERIOD = 62 days;
 
 	/* Number of DARFtokens per Ether */
 	uint public constant COIN_PER_ETHER = 500; // 500 DARF per ether
