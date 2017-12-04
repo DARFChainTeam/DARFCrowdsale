@@ -5,6 +5,13 @@ module.exports = {
       port: 18545,
       network_id: "*" // Match any network id
     },
+      live:{
+        host:"localhost",
+        post:8545,
+        network_id:1,
+        from: "address",
+        gas:4612388
+},
       rinkeby: {
           host: "localhost",
           port: 8545,

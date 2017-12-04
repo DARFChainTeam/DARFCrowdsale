@@ -20,12 +20,11 @@ module.exports = function(deployer) {
 
 	//link SafeMath to DARFtoken
 	deployer.link(SafeMath, DARFtoken);
-
 	//deploy the DARFtoken using the owner account
 	return deployer.deploy(DARFtoken, { from: owner }).then(function() {
 		//log the address of the DARFtoken
 		console.log("DARFtoken address: " + DARFtoken.address);
-
+                console.log("SafeMathAddress: "+ SafeMath.address);
 		//deploy the Crowdsale 
 		return deployer.deploy(Crowdsale, DARFtoken.address, wallet, { from: owner }).then(function() {
 			console.log("Crowdsale address: " + Crowdsale.address);
