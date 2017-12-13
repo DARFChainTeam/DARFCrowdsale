@@ -12,13 +12,13 @@ contract('start', function(accounts) {
     var wallet = "0x507bc16480b2f4ebfbc8a97a337c4c09fc754be3";
     var buyer = "0xf71260Be31DC3c437dd90f91E7D71eaAAa4E0a8e";
     var thief = "0xf71260Be31DC3c437dd90f91E7D71eaAAa4E0a8e";
-    
-    web3.personal.unlockAccount("0xa370ddf42d9c41dfb1a6d7daf0db3b7e901a03b2", "gfhjkm12345", 15000),"gfhjkm12345", 15000)
+
+//    web3.personal.unlockAccount("0x33915c9a9c4ed55685584c90701ed9f7b5091ca5", "test12345", 15000);
 
     function printBalance() {
         const ownerBalance = web3.eth.getBalance(owner);
         const walletBalance = web3.eth.getBalance(wallet);
-        const buyerBalance = web3.eth.getBalance(buyer);
+//        const buyerBalance = web3.eth.getBalance(buyer);
 
         const crowdsaleBalance = web3.eth.getBalance(Crowdsale.address);
 
@@ -33,9 +33,9 @@ contract('start', function(accounts) {
             return instance.balanceOf.call(owner)
                 .then(function (balance) {
                     console.log("Owner balance: ", web3.fromWei(ownerBalance, "ether").toString(), " ETHER / ", balance.valueOf(), " DARF");
-                    return instance.balanceOf.call(buyer);
+                  // return instance.balanceOf.call(buyer);
                 }).then(function (balance) {
-                    console.log("Buyer balance: ", web3.fromWei(buyerBalance, "ether").toString(), " ETHER / ", balance.valueOf(), " DARF");
+                  //  console.log("Buyer balance: ", web3.fromWei(buyerBalance, "ether").toString(), " ETHER / ", balance.valueOf(), " DARF");
                     return instance.balanceOf.call(Crowdsale.address);
                 }).then(function (balance) {
                     console.log("Crowdsale balance: ", web3.fromWei(crowdsaleBalance, "ether").toString(), " ETHER / ", balance.valueOf(), " DARF");
