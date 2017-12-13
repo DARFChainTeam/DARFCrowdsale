@@ -2,14 +2,14 @@ var DARFtoken = artifacts.require("./DARFtoken.sol");
 var Crowdsale = artifacts.require("./Crowdsale.sol");
 
 var TOTAL_COINS =   84000000000000000000000000;
-var CROWDSALE_CAP = 80000000000000000000000000;
+var CROWDSALE_CAP = 8000000000000000000000000;
 
 
 contract('start', function(accounts) {
 
     var eth = web3.eth;
-    var owner = "0xA370dDf42D9C41dfB1A6D7dAF0DB3b7e901a03B2";
-    var wallet = "0x86a080793F3bCB0b69f8D5A06CEb1AabdCa7E34f";
+    var owner = "0x33915c9a9c4ed55685584c90701ed9f7b5091ca5";
+    var wallet = "0x507bc16480b2f4ebfbc8a97a337c4c09fc754be3";
     var buyer = "0xf71260Be31DC3c437dd90f91E7D71eaAAa4E0a8e";
     var thief = "0xf71260Be31DC3c437dd90f91E7D71eaAAa4E0a8e";
     
