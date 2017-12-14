@@ -8,16 +8,15 @@ var CROWDSALE_CAP = 8000000000000000000000000;
 contract('start', function(accounts) {
 
     var eth = web3.eth;
-    var owner = eth.accounts[0];
-    var wallet = eth.accounts[1];
-    var buyer = eth.accounts[2];
-    var thief = eth.accounts[3];
 
+    var owner ='0xb6c8f16cc72565e05457950c1De4be946E38Da98';  //
+
+    var wallet = '0x139031c1b0cccc87daaf7049127391a3a76bad5a';//web3.eth.accounts[1];
 
     function printBalance() {
         const ownerBalance = web3.eth.getBalance(owner);
         const walletBalance = web3.eth.getBalance(wallet);
-        const buyerBalance = web3.eth.getBalance(buyer);
+      //const buyerBalance = web3.eth.getBalance(buyer);
 
         const crowdsaleBalance = web3.eth.getBalance(Crowdsale.address);
 
@@ -32,9 +31,9 @@ contract('start', function(accounts) {
             return instance.balanceOf.call(owner)
                 .then(function (balance) {
                     console.log("Owner balance: ", web3.fromWei(ownerBalance, "ether").toString(), " ETHER / ", balance.valueOf(), " DARF");
-                    return instance.balanceOf.call(buyer);
+                  //                 return instance.balanceOf.call(buyer);
                 }).then(function (balance) {
-                    console.log("Buyer balance: ", web3.fromWei(buyerBalance, "ether").toString(), " ETHER / ", balance.valueOf(), " DARF");
+                  // console.log("Buyer balance: ", web3.fromWei(buyerBalance, "ether").toString(), " ETHER / ", balance.valueOf(), " DARF");
                     return instance.balanceOf.call(Crowdsale.address);
                 }).then(function (balance) {
                     console.log("Crowdsale balance: ", web3.fromWei(crowdsaleBalance, "ether").toString(), " ETHER / ", balance.valueOf(), " DARF");
