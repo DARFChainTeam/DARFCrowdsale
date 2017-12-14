@@ -163,7 +163,7 @@ contract Crowdsale is Pausable, PullPayment {
 				potential_investor.weiReceived = backer.weiReceived; // Update the total wei collected during the crowdfunding for this potential investor
                 // add share to potential_investor
 				if (potential_investor.profitshare == 0 ) {
-					uint startshare = potential_investor.weiReceived.mul(10).div(MIN_INVEST_BUY);
+					uint startshare = potential_investor.weiReceived.mul(10000).div(MIN_INVEST_BUY);
 					MAX_INVEST_SHARE = MAX_INVEST_SHARE.sub(startshare);
 					potential_investor.profitshare = potential_investor.profitshare.add(startshare);
 				} else {
