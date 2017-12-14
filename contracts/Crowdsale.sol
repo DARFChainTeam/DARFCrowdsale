@@ -10,7 +10,7 @@ import "./DARFtoken.sol";
   This smart contract collects ETH, and in return emits DARFtoken tokens to the backers
 */
 contract Crowdsale is Pausable, PullPayment {
-    
+
     using SafeMath for uint;
 
   	struct Backer {
@@ -117,21 +117,21 @@ contract Crowdsale is Pausable, PullPayment {
 		multisigEther = _to;
 	}
 
-	/* 
+	/*
 	 * The fallback function corresponds to a donation in ETH
 	 */
 	function() stopInEmergency respectTimeFrame payable {
 		receiveETH(msg.sender);
 	}
 
-	/* 
+	/*
 	 * To call to start the crowdsale
 	 */
 	function start() onlyOwner {
 		require (startTime == 0);
 
-		startTime = now ;            
-		endTime =  now + CROWDSALE_PERIOD;    
+		startTime = now ;
+		endTime =  now + CROWDSALE_PERIOD;
 	}
 
 	/*
@@ -141,7 +141,7 @@ contract Crowdsale is Pausable, PullPayment {
 		require(!(msg.value < MIN_BUY_ETHER)); // Don't accept funding under a predefined threshold
         if (multisigEther ==  beneficiary) return ; // Don't pay tokens if team refund ethers
     uint coinToSend = bonus(msg.value.mul(COIN_PER_ETHER));// Compute the number of DARFtoken to send
-		require(!(coinToSend.add(coinSentToEther) > MAX_CAP));	
+		require(!(coinToSend.add(coinSentToEther) > MAX_CAP));
 
         Backer backer = backers[beneficiary];
 		coin.transfer(beneficiary, coinToSend); // Transfer DARFtokens right now
@@ -153,7 +153,7 @@ contract Crowdsale is Pausable, PullPayment {
         if (backer.weiReceived > MIN_INVEST_BUY) {
 
             // calculate profit share
-            uint share = msg.value.mul(10).div(MIN_INVEST_BUY); // 100 = 1% from 10000
+            uint share = msg.value.mul(10000).div(MIN_INVEST_BUY); // 100 = 1% from 10000
 			// compare to all profit share will LT 49%
 			LogInvestshare(msg.sender,share);
 			if (MAX_INVEST_SHARE > share) {
@@ -181,9 +181,9 @@ contract Crowdsale is Pausable, PullPayment {
 
 		// Send events
 		LogCoinsEmited(msg.sender ,coinToSend);
-		LogReceivedETH(beneficiary, etherReceived); 
+		LogReceivedETH(beneficiary, etherReceived);
 	}
-	
+
 
 	/*
 	 *Compute the DARFtoken bonus according to the BUYment period
@@ -218,13 +218,13 @@ contract Crowdsale is Pausable, PullPayment {
 	function finalize() onlyOwner public {
 
 		if (now < endTime) { // Cannot finalise before CROWDSALE_PERIOD or before selling all coins
-			require (coinSentToEther == MAX_CAP); 
+			require (coinSentToEther == MAX_CAP);
 		}
 
 		require(!(coinSentToEther < MIN_CAP && now < endTime + 15 days)); // If MIN_CAP is not reached donors have 15days to get refund before we can finalise
 
 		require(multisigEther.send(this.balance)); // Move the remaining Ether to the multisig address
-		
+
 		uint remains = coin.balanceOf(this);
 		// No burn all of my precisiossss!
 		// if (remains > 0) { // Burn the rest of DARFtokens
@@ -233,7 +233,7 @@ contract Crowdsale is Pausable, PullPayment {
 		crowdsaleClosed = true;
 	}
 
-	/*	
+	/*
 	* Failsafe drain
 	*/
 	function drain() onlyOwner {
@@ -274,18 +274,18 @@ contract Crowdsale is Pausable, PullPayment {
 
 		// Send events
 		LogCoinsEmited(this ,remains);
-		LogReceivedETH(owner, etherReceived); 
+		LogReceivedETH(owner, etherReceived);
 	}
 
 
-	/* 
+	/*
   	 * When MIN_CAP is not reach:
   	 * 1) backer call the "approve" function of the DARFtoken token contract with the amount of all DARFtokens they got in order to be refund
   	 * 2) backer call the "refund" function of the Crowdsale contract with the same amount of DARFtokens
    	 * 3) backer call the "withdrawPayments" function of the Crowdsale contract to get a refund in ETH
    	 */
 	function refund(uint _value) minCapNotReached public {
-		
+
 		require (_value == backers[msg.sender].coinSent) ; // compare value from backer balance
 
 		coin.transferFrom(msg.sender, address(this), _value); // get the token back to the crowdsale contract

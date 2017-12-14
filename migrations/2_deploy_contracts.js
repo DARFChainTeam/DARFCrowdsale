@@ -6,14 +6,12 @@ var Crowdsale = artifacts.require("./Crowdsale.sol");
 module.exports = function(deployer) {
 
 	//owner of the crowdsale
-	 // var owner ='0x00E417f2aD0018A84d1cFe4432657418e10C0d94';  //
-	var owner = web3.eth.accounts[0];
+	var owner ='0xb6c8f16cc72565e05457950c1De4be946E38Da98';  //
 
-	var wallet = web3.eth.accounts[1]; //wallet where the ehter will get deposited
-	//var wallet = '0xD72258A9072AE6fC4265743ddd46978b5B66175F';//web3.eth.accounts[1];
+	var wallet = '0x139031c1b0cccc87daaf7049127391a3a76bad5a';//web3.eth.accounts[1];
 
-	console.log("Owner address: " + owner);	
-	console.log("Wallet address: " + wallet);	
+	console.log("Owner address: " + owner);
+	console.log("Wallet address: " + wallet);
 
 	//deploy SafeMath from the owner of the crowdsale
 	deployer.deploy(SafeMath, { from: owner });
@@ -25,8 +23,8 @@ module.exports = function(deployer) {
 	return deployer.deploy(DARFtoken, { from: owner }).then(function() {
 		//log the address of the DARFtoken
 		console.log("DARFtoken address: " + DARFtoken.address);
-
-		//deploy the Crowdsale 
+                console.log("SafeMathAddress: "+ SafeMath.address);
+		//deploy the Crowdsale
 		return deployer.deploy(Crowdsale, DARFtoken.address, wallet, { from: owner }).then(function() {
 			console.log("Crowdsale address: " + Crowdsale.address);
 			return DARFtoken.deployed().then(function(coin) {
