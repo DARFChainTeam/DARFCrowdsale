@@ -9,7 +9,7 @@ contract('start', function(accounts) {
 
     var eth = web3.eth;
 
-    var owner ='0xb6c8f16cc72565e05457950c1De4be946E38Da98';  //
+    var owner ='0xb6c8f16cc72565e05457950c1De4be946E38Da98';  //owner of address
 
     var wallet = '0x139031c1b0cccc87daaf7049127391a3a76bad5a';//web3.eth.accounts[1];
 
